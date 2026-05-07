@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: ''
+      ytlpopts:
+        description: 'Additional options for yt-dlp'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   download-and-save:
@@ -109,6 +114,7 @@ jobs:
         run: |
           RAW_URLS="${{ github.event.inputs.url }}"
           QUALITY="${{ github.event.inputs.quality }}"
+          YTDLP_OPTS="${{ github.event.inputs.ytlpopts }}"
           
           FORMATTED_URLS=$(echo "$RAW_URLS" | tr ',' ' ' | tr '\n' ' ')
           
@@ -146,7 +152,7 @@ jobs:
               COOKIE_ARG=""
               [ -s youtube_cookies.txt ] && COOKIE_ARG="--cookies youtube_cookies.txt"
               
-              yt-dlp --js-runtimes bun:$HOME/.bun/bin/bun $COOKIE_ARG $YTDLP_F -o "tmp_downloads/%(title)s.%(ext)s" "$URL"
+              yt-dlp --js-runtimes bun:$HOME/.bun/bin/bun $COOKIE_ARG $YTDLP_F -o "tmp_downloads/%(title)s.%(ext)s" $YTDLP_OPTS "$URL"
               
             else
               echo "Downloading direct file with aria2..."
